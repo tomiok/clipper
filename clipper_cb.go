@@ -10,10 +10,11 @@ const maxFailures = 5
 type Status int
 
 type Clipper struct {
-	Name        string
-	MaxFailures int
-	open        bool
-	openedAt    int64
+	Name       string
+	Failures   int
+	TotalFails int
+	open       bool
+	openedAt   int64
 
 	numOfRuns int
 	avgTime   float32
@@ -21,20 +22,24 @@ type Clipper struct {
 	mutex sync.Mutex
 }
 
-func NewClipper(name string) *Clipper {
+var clippers map[string]*Clipper
+
+func newClipper(name string) *Clipper {
+	if clippers == nil {
+		clippers = make(map[string]*Clipper)
+	}
+
 	return &Clipper{
-		Name:        name,
-		MaxFailures: 0,
+		Name:     name,
+		Failures: 0,
 	}
 }
-
-var clippers map[string]*Clipper
 
 func getClipper(name string) *Clipper {
 	cb, ok := clippers[name]
 
 	if !ok {
-		c := NewClipper(name)
+		c := newClipper(name)
 		clippers[name] = c
 		return c
 	}
@@ -44,15 +49,16 @@ func getClipper(name string) *Clipper {
 
 func (c *Clipper) update(err error) {
 	if err != nil {
-		c.MaxFailures++
-		if c.MaxFailures >= maxFailures {
+		c.Failures++
+		c.TotalFails++
+		if c.Failures >= maxFailures {
 			c.open = true
 			c.openedAt = time.Now().Unix()
 			return
 		}
 	}
 	c.open = false
-	c.MaxFailures = 0
+	c.Failures = 0
 }
 
 func (c *Clipper) isOpen() bool {

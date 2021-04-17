@@ -1,6 +1,9 @@
 package clipper
 
-import "time"
+import (
+	"log"
+	"time"
+)
 
 type command struct {
 	cb               *Clipper
@@ -18,22 +21,24 @@ func Do(name string, fn func() error, fallbackFn func() error) {
 		runFunction:      fn,
 		fallbackFunction: fallbackFn,
 	}
-
-	if cmd.cb.open {
-
-		return
-	}
 	run(cmd)
 }
 
 func run(cmd *command) {
 	cb := cmd.cb
 
-	if !cb.isOpen() {
-		// cannot run
-
+	if cb.isOpen() {
+		// fail fast here
 		return
 	}
 
-	cb.update(cmd.runFunction())
+	err := cmd.runFunction()
+	cb.numOfRuns++
+	if err != nil {
+		cb.update(err)
+		if cmd.fallbackFunction != nil {
+			log.Println(cmd.fallbackFunction())
+			return
+		}
+	}
 }

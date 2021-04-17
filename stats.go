@@ -1,0 +1,39 @@
+package clipper
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+type stats struct {
+	NumOfCircuits int     `json:"num_of_circuits"`
+	IsOpen        bool    `json:"is_open"`
+	TotalRuns     int     `json:"total_runs"`
+	AvgSuccess    float32 `json:"avg_success"`
+}
+
+func FillStats(name string, print bool) {
+	cb := getClipper(name)
+	total := cb.numOfRuns
+	fails := cb.TotalFails
+	var avg float32 = 100
+	if fails != 0 {
+		avg = 100 - float32((fails * 100) / total)
+	}
+
+	s := stats{
+		NumOfCircuits: len(clippers),
+		IsOpen:        cb.open,
+		TotalRuns:     total,
+		AvgSuccess:    avg,
+	}
+
+	if print {
+		printStats(s)
+	}
+}
+
+func printStats(s stats) {
+	b, _ := json.Marshal(s)
+	fmt.Println(string(b))
+}
