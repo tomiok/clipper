@@ -15,17 +15,6 @@ func main() {
 		_, err := http.Get("http://www.google.com/robots.txt")
 		return err
 	}, nil)
-
-	clipper.Do("my_command", func() error {
-		_, err := http.Get("http://www.google.com/robots.txt")
-		return err
-	}, nil)
-
-	clipper.Do("my_command", func() error {
-		_, err := http.Get("asddd,,,,@@@@")
-		return err
-	}, nil)
-
-
+	
 	clipper.FillStats("my_command", true)
 }
