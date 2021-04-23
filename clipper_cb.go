@@ -30,8 +30,8 @@ func newClipper(name string) *Clipper {
 	}
 
 	return &Clipper{
-		Name:     name,
-		Failures: 0,
+		Name:  name,
+		mutex: sync.Mutex{},
 	}
 }
 

@@ -37,21 +37,41 @@ func run(cmd *command) chan error {
 		cmd.err <- errors.New("circuit is open")
 		return cmd.err
 	}
+	var err error
+	go func() {
+		defer func() {
+			cmd.end <- true
+		}()
 
-	err := cmd.runFunction()
-	cb.numOfRuns++
-	if err != nil {
-		cb.update(err)
-		if cmd.fallbackFunction != nil {
-			err = cmd.fallbackFunction()
-			if err != nil {
-				cmd.err <- err
-				return cmd.err
+		err = cmd.runFunction()
+
+		cb.numOfRuns++
+		if err != nil {
+			cb.update(err)
+			if cmd.fallbackFunction != nil {
+				err = cmd.fallbackFunction()
+				if err != nil {
+					cmd.err <- err
+					return
+				}
+				return
 			}
-			return cmd.err
+			cmd.err <- err
+			return
 		}
-		cmd.err <- err
-		return cmd.err
-	}
+		return
+	}()
+
+	go func() {
+		timer := time.NewTimer(5 * time.Second)
+		defer timer.Stop()
+		select {
+		case <-cmd.end:
+			return
+		case <-timer.C:
+			return
+		}
+	}()
+
 	return cmd.err
 }

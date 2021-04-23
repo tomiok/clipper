@@ -8,18 +8,20 @@ import (
 
 func main() {
 	out := make(chan bool, 1)
-	cerr := clipper.Do("my_command", func() error {
-		_, err := http.Get("httpdasdas@adasd")
+	var res *http.Response
+	 cerr := clipper.Do("my_command", func() error {
+		r, err := http.Get("hsdadasdasdasdttp://www.google.com/robots.txt")
+		res = r
 		out <- true
 		return err
 	}, nil)
 
 	select {
-	case <-out:
-		if e, ok := <-cerr; ok {
-			fmt.Println(e)
-		}
-	}
+	case v:= <-out:
+		fmt.Println(v)
+	case e := <- cerr:
+		fmt.Println(e)
 
+	}
 	clipper.FillStats("my_command", true)
 }
