@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func main() {
+func main1() {
 	out := make(chan bool, 1)
 	var res *http.Response
 	valChan := clipper.Do("my_command", func() error {
