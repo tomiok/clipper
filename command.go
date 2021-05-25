@@ -5,6 +5,14 @@ import (
 	"time"
 )
 
+type status int
+
+var (
+	ok          status = 0
+	withErr     status = 1
+	withTimeout status = 1
+)
+
 type command struct {
 	cb               *Clipper
 	start            int64
@@ -12,23 +20,23 @@ type command struct {
 	runFunction      func() error
 	fallbackFunction func() error
 	end              chan bool
-	status           chan int
+	status           chan status
 }
 
-func Do(name string, fn func() error, fallbackFn func() error) chan int {
+func Do(name string, fn func() error, fallbackFn func() error) chan status {
 	cb := getClipper(name)
 	cmd := &command{
 		cb:               cb,
 		start:            time.Now().Unix(),
 		runFunction:      fn,
 		fallbackFunction: fallbackFn,
-		status:           make(chan int, 1),
+		status:           make(chan status, 1),
 		end:              make(chan bool, 1),
 	}
 	return run(cmd)
 }
 
-func run(cmd *command) chan int {
+func run(cmd *command) chan status {
 	cb := cmd.cb
 	cb.mutex.Lock()
 
@@ -55,18 +63,18 @@ func run(cmd *command) chan int {
 			if cmd.fallbackFunction != nil {
 				err = cmd.fallbackFunction()
 				if err != nil {
-					cmd.status <- 1
+					cmd.status <- withErr
 					return
 				} else {
-					cmd.status <- 0
+					cmd.status <- ok
 					return
 				}
 			} else {
-				cmd.status <- 1
+				cmd.status <- withErr
 				return
 			}
 		}
-		cmd.status <- 0
+		cmd.status <- ok
 		return
 	}()
 
@@ -77,7 +85,7 @@ func run(cmd *command) chan int {
 		case <-cmd.end:
 			return
 		case <-timer.C:
-			cmd.status <- 1
+			cmd.status <- withTimeout
 			return
 		}
 
