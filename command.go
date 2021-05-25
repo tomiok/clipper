@@ -1,7 +1,6 @@
 package clipper
 
 import (
-	"sync"
 	"time"
 )
 
@@ -51,11 +50,7 @@ func run(cmd *command) chan status {
 			cmd.end <- true
 		}()
 
-		var err error
-		once := &sync.Once{}
-		once.Do(func() {
-			err = cmd.runFunction()
-		})
+		err := cmd.runFunction()
 
 		cb.numOfRuns++
 		if err != nil {
