@@ -7,7 +7,7 @@ import (
 
 type command struct {
 	cb               *Clipper
-	start            time.Time
+	start            int64
 	duration         int
 	runFunction      func() error
 	fallbackFunction func() error
@@ -19,7 +19,7 @@ func Do(name string, fn func() error, fallbackFn func() error) chan int {
 	cb := getClipper(name)
 	cmd := &command{
 		cb:               cb,
-		start:            time.Now(),
+		start:            time.Now().Unix(),
 		runFunction:      fn,
 		fallbackFunction: fallbackFn,
 		status:           make(chan int, 1),
