@@ -19,7 +19,9 @@ type Clipper struct {
 	numOfRuns int
 	avgTime   float32
 
-	mutex sync.Mutex
+	mutex *sync.Mutex
+
+	paths []string
 }
 
 var clippers map[string]*Clipper
@@ -31,7 +33,7 @@ func newClipper(name string) *Clipper {
 
 	return &Clipper{
 		Name:  name,
-		mutex: sync.Mutex{},
+		mutex: &sync.Mutex{},
 	}
 }
 

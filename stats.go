@@ -11,7 +11,6 @@ type stats struct {
 	TotalRuns     int     `json:"total_runs"`
 	TotalFails    int     `json:"total_fails"`
 	AvgSuccess    float32 `json:"avg_success"`
-	Path          string  `json:"path"`
 }
 
 func FillStats(name string, print bool) {

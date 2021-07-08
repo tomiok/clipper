@@ -15,11 +15,13 @@ var (
 type command struct {
 	cb               *Clipper
 	start            int64
-	duration         int
+	maxDuration      int
+	minDuration      int
 	runFunction      func() error
 	fallbackFunction func() error
 	end              chan bool
 	status           chan status
+	cmdType          string
 }
 
 func Do(name string, fn func() error, fallbackFn func() error) chan status {
@@ -29,6 +31,7 @@ func Do(name string, fn func() error, fallbackFn func() error) chan status {
 		start:            time.Now().Unix(),
 		runFunction:      fn,
 		fallbackFunction: fallbackFn,
+		cmdType:          "async",
 		status:           make(chan status, 1),
 		end:              make(chan bool, 1),
 	}

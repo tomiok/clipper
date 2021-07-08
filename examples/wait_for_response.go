@@ -16,15 +16,15 @@ func main1() {
 		return err
 	}, nil)
 
-		select {
-		case <-out:
-			value := <- valChan
-			if value == 0{
-				fmt.Println("no errors")
-			} else {
-				fmt.Println("some errors here")
-			}
+	select {
+	case <-out:
+		value := <-valChan
+		if value == 0 {
+			fmt.Println("no errors")
+		} else {
+			fmt.Println("some errors here")
 		}
+	}
 	fmt.Println(res)
 	clipper.FillStats("my_command", true)
 }
