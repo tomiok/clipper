@@ -9,7 +9,7 @@ type status int
 var (
 	ok          status = 0
 	withErr     status = 1
-	withTimeout status = 1
+	withTimeout status = 2
 )
 
 type command struct {
