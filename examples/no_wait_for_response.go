@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func main3() {
+func main() {
 	var res *http.Response
 	clipper.Do("my_command", func() error {
 		r, err := http.Get("http://www.google.com/robots.txt")
