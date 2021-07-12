@@ -8,7 +8,7 @@ import (
 
 func main() {
 	err := clipper.DoAsync("my_command", func() error {
-		_, err := http.Get("http://www.goofdssfdsfsdgle.com/robots.txt")
+		_, err := http.Get("bad-protocol://www.badgoogle.com/robots.txt")
 		return err
 	}, nil)
 
