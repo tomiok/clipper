@@ -11,8 +11,8 @@ type Status int
 
 type Clipper struct {
 	Name       string
-	Failures   int
-	TotalFails int
+	Failures   int64
+	TotalFails int64
 	open       bool
 	openedAt   int64
 
@@ -21,13 +21,6 @@ type Clipper struct {
 	mutex *sync.Mutex
 
 	failures int
-}
-
-type circuitStats struct {
-	numOfRuns      int
-	avgTime        float32
-	lowestLatency  int
-	highestLatency int
 }
 
 var clippers map[string]*Clipper
@@ -51,7 +44,7 @@ func getClipper(name string) *Clipper {
 	cb, ok := clippers[name]
 
 	if !ok {
-		c := newClipper(name)
+		c := newClipper(Configs{Name: name})
 		clippers[name] = c
 		return c
 	}

@@ -55,7 +55,7 @@ func run(cmd *command) chan status {
 
 		err := cmd.runFunction()
 
-		cb.numOfRuns++
+		cb.statistics.numOfRuns++
 		if err != nil {
 			cb.update(err)
 			if cmd.fallbackFunction != nil {
