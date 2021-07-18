@@ -16,25 +16,35 @@ type Clipper struct {
 	open       bool
 	openedAt   int64
 
-	numOfRuns int
-	avgTime   float32
+	statistics circuitStats
 
 	mutex *sync.Mutex
 
-	paths []string
+	failures int
+}
+
+type circuitStats struct {
+	numOfRuns      int
+	avgTime        float32
+	lowestLatency  int
+	highestLatency int
 }
 
 var clippers map[string]*Clipper
 
-func newClipper(name string) *Clipper {
+func newClipper(c Configs) *Clipper {
 	if clippers == nil {
 		clippers = make(map[string]*Clipper)
 	}
 
 	return &Clipper{
-		Name:  name,
+		Name:  c.Name,
 		mutex: &sync.Mutex{},
 	}
+}
+
+type Configs struct {
+	Name string
 }
 
 func getClipper(name string) *Clipper {
