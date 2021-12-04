@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	err := clipper.DoAsync("my_command", func() error {
+	err := clipper.DoInSync("my_command", func() error {
 		_, err := http.Get("bad-protocol://www.badgoogle.com/robots.txt")
 		return err
 	}, nil)

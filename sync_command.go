@@ -5,7 +5,8 @@ import (
 	"time"
 )
 
-func DoAsync(name string, fn func() error, callbackFn func() error) error {
+// DoInSync is the same as do, but you should wait until the function finishes.
+func DoInSync(name string, fn func() error, callbackFn func() error) error {
 	cb := getClipper(name)
 
 	cmd := &command{
