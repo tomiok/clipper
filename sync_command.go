@@ -20,10 +20,10 @@ func DoInSync(name string, fn func() error, callbackFn func() error) error {
 	}
 
 	ch := run(cmd)
-	s := <-ch
+	statusResult := <-ch
 
-	if s == 1 {
-		return errors.New("error")
+	if statusResult != finishOk {
+		return errors.New("finish with errors, please checkout previous logs")
 	}
 
 	return nil

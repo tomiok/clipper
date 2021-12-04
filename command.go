@@ -7,9 +7,9 @@ import (
 type status int
 
 var (
-	ok          status = 0
-	withErr     status = 1
-	withTimeout status = 2
+	finishOk          status = 0
+	finishWithErr     status = 1
+	finishWithTimeout status = 2
 )
 
 type command struct {
@@ -67,18 +67,18 @@ func run(cmd *command) chan status {
 			if cmd.fallbackFunction != nil {
 				err = cmd.fallbackFunction()
 				if err != nil {
-					cmd.status <- withErr
+					cmd.status <- finishWithErr
 					return
 				} else {
-					cmd.status <- ok
+					cmd.status <- finishOk
 					return
 				}
 			} else {
-				cmd.status <- withErr
+				cmd.status <- finishWithErr
 				return
 			}
 		}
-		cmd.status <- ok
+		cmd.status <- finishOk
 		return
 	}()
 
@@ -89,7 +89,7 @@ func run(cmd *command) chan status {
 		case <-cmd.end:
 			return
 		case <-timer.C:
-			cmd.status <- withTimeout
+			cmd.status <- finishWithTimeout
 			return
 		}
 
