@@ -24,6 +24,11 @@ type command struct {
 	cmdType          string
 }
 
+// Do will perform the command operation, return a status with
+// 0 == no error
+// 1 == error (app)
+// 2 == timeout
+// everything != 0 is counted as error
 func Do(name string, fn func() error, fallbackFn func() error) chan status {
 	cb := getClipper(name)
 	cmd := &command{

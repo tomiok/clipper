@@ -41,9 +41,9 @@ type Configs struct {
 }
 
 func getClipper(name string) *Clipper {
-	cb, ok := clippers[name]
+	cb, _ok := clippers[name]
 
-	if !ok {
+	if !_ok {
 		c := newClipper(Configs{Name: name})
 		clippers[name] = c
 		return c
