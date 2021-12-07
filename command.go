@@ -15,8 +15,6 @@ var (
 type command struct {
 	cb               *Clipper
 	start            int64
-	maxDuration      int
-	minDuration      int
 	runFunction      func() error
 	fallbackFunction func() error
 	end              chan bool
@@ -29,8 +27,12 @@ type command struct {
 // 1 == error (app)
 // 2 == timeout
 // everything != 0 is counted as error
-//
-func Do(name string, fn func() error, fallbackFn func() error) chan status {
+// you can provide the config
+func Do(name string, fn func() error, fallbackFn func() error, cfg *Configs) chan status {
+	if cfg != nil {
+
+	}
+
 	cb := getClipper(name)
 	cmd := &command{
 		cb:               cb,
@@ -92,7 +94,6 @@ func run(cmd *command) chan status {
 			cmd.status <- finishWithTimeout
 			return
 		}
-
 	}()
 
 	return cmd.status

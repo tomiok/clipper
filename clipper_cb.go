@@ -25,7 +25,7 @@ type Clipper struct {
 
 var clippers map[string]*Clipper
 
-func newClipper(c Configs) *Clipper {
+func newClipper(c *Configs) *Clipper {
 	if clippers == nil {
 		clippers = make(map[string]*Clipper)
 	}
@@ -37,16 +37,21 @@ func newClipper(c Configs) *Clipper {
 }
 
 type Configs struct {
-	Name string
+	Name             string
+	MaxDurationInSec int
 }
 
-func getClipper(name string) *Clipper {
-	cb, _ok := clippers[name]
+func setClipper(cfg *Configs) *Clipper {
+	c := newClipper(cfg)
+	clippers[cfg.Name] = c
+	return c
+}
+
+func getClipper(cfg *Configs) *Clipper {
+	cb, _ok := clippers[cfg.Name]
 
 	if !_ok {
-		c := newClipper(Configs{Name: name})
-		clippers[name] = c
-		return c
+		return setClipper(cfg)
 	}
 
 	return cb

@@ -6,8 +6,8 @@ import (
 	"sync/atomic"
 )
 
-type stats struct {
-	NumOfCircuits int   `json:"num_of_circuits"`
+type Stats struct {
+	NumOfCircuits int     `json:"num_of_circuits"`
 	IsOpen        bool    `json:"is_open"`
 	TotalRuns     int64   `json:"total_runs"`
 	TotalFails    int64   `json:"total_fails"`
@@ -25,7 +25,7 @@ func (c *circuitStats) updateRuns(delta int) {
 	atomic.AddInt64(&c.numOfRuns, int64(delta))
 }
 
-func FillStats(name string, print bool) {
+func FillStats(name string, print bool) Stats {
 	cb := getClipper(name)
 	total := cb.statistics.numOfRuns
 	fails := cb.TotalFails
@@ -34,7 +34,7 @@ func FillStats(name string, print bool) {
 		avg = float64(100 - (fails * 100 / total))
 	}
 
-	s := stats{
+	s := Stats{
 		NumOfCircuits: len(clippers),
 		IsOpen:        cb.open,
 		TotalRuns:     total,
@@ -45,9 +45,11 @@ func FillStats(name string, print bool) {
 	if print {
 		printStats(s)
 	}
+
+	return s
 }
 
-func printStats(s stats) {
+func printStats(s Stats) {
 	b, _ := json.Marshal(s)
 	fmt.Println(string(b))
 }
