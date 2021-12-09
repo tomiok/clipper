@@ -9,7 +9,7 @@ import (
 func main() {
 	out := make(chan bool, 1)
 	var res *http.Response
-	valChan := clipper.Do("my_command", func() error {
+	valChan := clipper.Do(&clipper.Configs{Name: "my_command"}, func() error {
 		r, err := http.Get("http://www.google.com/robots.txt")
 		res = r
 		out <- true

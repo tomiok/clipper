@@ -7,7 +7,7 @@ import (
 
 // DoInSync is the same as do, but you should wait until the function finishes.
 func DoInSync(name string, fn func() error, callbackFn func() error) error {
-	cb := getClipper(name)
+	cb := getClipper(&Configs{Name: name})
 
 	cmd := &command{
 		cb:               cb,

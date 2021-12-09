@@ -8,7 +8,7 @@ import (
 
 func BenchmarkDo(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		Do("my-circuit", func() error {
+		Do(&Configs{Name: "my-circuit"}, func() error {
 			_, err := http.Get("http://www.google.com/robots")
 			return err
 		}, nil)
@@ -19,7 +19,7 @@ func BenchmarkDo(b *testing.B) {
 func TestDo(t *testing.T) {
 	res := make(chan int, 1)
 
-	ch := Do("my-circuit", func() error {
+	ch := Do(&Configs{Name: "my-circuit"}, func() error {
 
 		res <- 1
 		return nil
@@ -37,7 +37,7 @@ func TestDo(t *testing.T) {
 func TestDo_failing(t *testing.T) {
 	res := make(chan int, 1)
 
-	ch := Do("my-circuit", func() error {
+	ch := Do(&Configs{Name: "my-circuit"}, func() error {
 
 		res <- 1
 		return errors.New("some error here")
@@ -50,4 +50,11 @@ func TestDo_failing(t *testing.T) {
 		}
 		return
 	}
+}
+
+func TestDo_nilConfig(t *testing.T) {
+	Do(nil, func() error {
+		_, err := http.Get("http://www.google.com/robots")
+		return err
+	}, nil)
 }

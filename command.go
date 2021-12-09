@@ -28,12 +28,8 @@ type command struct {
 // 2 == timeout
 // everything != 0 is counted as error
 // you can provide the config
-func Do(name string, fn func() error, fallbackFn func() error, cfg *Configs) chan status {
-	if cfg != nil {
-
-	}
-
-	cb := getClipper(name)
+func Do(cfg *Configs, fn func() error, fallbackFn func() error) chan status {
+	cb := getClipper(cfg)
 	cmd := &command{
 		cb:               cb,
 		start:            time.Now().Unix(),

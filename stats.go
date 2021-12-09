@@ -26,7 +26,7 @@ func (c *circuitStats) updateRuns(delta int) {
 }
 
 func FillStats(name string, print bool) Stats {
-	cb := getClipper(name)
+	cb := getClipper(&Configs{Name: name})
 	total := cb.statistics.numOfRuns
 	fails := cb.TotalFails
 	var avg float64 = 100

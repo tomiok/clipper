@@ -1,11 +1,14 @@
 package clipper
 
 import (
+	"fmt"
+	"log"
 	"sync"
 	"time"
 )
 
 const maxFailures = 5
+const defaultTimeout = 10
 
 type Status int
 
@@ -48,6 +51,16 @@ func setClipper(cfg *Configs) *Clipper {
 }
 
 func getClipper(cfg *Configs) *Clipper {
+	if cfg == nil {
+		randName := randStr()
+		log.Println("empty config with name: " + randName)
+		log.Println(fmt.Sprintf("default timeout: %d", defaultTimeout))
+		cfg = &Configs{
+			Name:             randName,
+			MaxDurationInSec: defaultTimeout,
+		}
+	}
+
 	cb, _ok := clippers[cfg.Name]
 
 	if !_ok {
