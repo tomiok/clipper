@@ -15,15 +15,12 @@ type Status int
 type Clipper struct {
 	Name       string
 	Failures   int64
-	TotalFails int64
 	open       bool
 	openedAt   int64
 
 	statistics circuitStats
 
 	mutex *sync.Mutex
-
-	failures int
 }
 
 var clippers map[string]*Clipper
@@ -73,7 +70,6 @@ func getClipper(cfg *Configs) *Clipper {
 func (c *Clipper) update(err error) {
 	if err != nil {
 		c.Failures++
-		c.TotalFails++
 		if c.Failures >= maxFailures {
 			c.open = true
 			c.openedAt = time.Now().Unix()

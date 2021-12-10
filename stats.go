@@ -28,7 +28,7 @@ func (c *circuitStats) updateRuns(delta int) {
 func FillStats(name string, print bool) Stats {
 	cb := getClipper(&Configs{Name: name})
 	total := cb.statistics.numOfRuns
-	fails := cb.TotalFails
+	fails := cb.Failures
 	var avg float64 = 100
 	if fails != 0 {
 		avg = float64(100 - (fails * 100 / total))
@@ -50,6 +50,6 @@ func FillStats(name string, print bool) Stats {
 }
 
 func printStats(s Stats) {
-	b, _ := json.Marshal(s)
+	b, _ := json.MarshalIndent(s, "", "\t")
 	fmt.Println(string(b))
 }
