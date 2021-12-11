@@ -11,7 +11,7 @@ func ExposeMetrics() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		values := r.URL.Query()
 
-		cmd := values.Get("command")
+		cmd := values.Get("c")
 
 		if cmd == "" {
 			w.WriteHeader(http.StatusNoContent)
