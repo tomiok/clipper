@@ -12,6 +12,7 @@ type Stats struct {
 	TotalRuns     int64   `json:"total_runs"`
 	TotalFails    int64   `json:"total_fails"`
 	AvgSuccess    float64 `json:"avg_success"`
+	NumOfOpenings int     `json:"num_of_openings"`
 }
 
 type circuitStats struct {
@@ -19,6 +20,7 @@ type circuitStats struct {
 	avgTime        float64
 	lowestLatency  int64
 	highestLatency int64
+	numOfOpenings  int
 }
 
 func (c *circuitStats) updateRuns(delta int) {
@@ -26,7 +28,7 @@ func (c *circuitStats) updateRuns(delta int) {
 }
 
 func FillStats(name string, print bool) Stats {
-	cb := getClipper(&Configs{Name: name})
+	cb := getClipperWithName(name)
 	total := cb.statistics.numOfRuns
 	fails := cb.Failures
 	var avg float64 = 100
@@ -40,6 +42,7 @@ func FillStats(name string, print bool) Stats {
 		TotalRuns:     total,
 		TotalFails:    fails,
 		AvgSuccess:    avg,
+		NumOfOpenings: cb.statistics.numOfOpenings,
 	}
 
 	if print {

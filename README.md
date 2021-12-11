@@ -64,3 +64,10 @@ clipper.Do(&clipper.Configs{Name: "my_command"}, func() error {
 
 ### Web
 Check the function `ExposeMetrics()` and get all the metrics info. You must provide a valid command name. 
+
+--- 
+### Tests
+
+```shell
+go test -v .
+```

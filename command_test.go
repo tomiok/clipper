@@ -58,3 +58,12 @@ func TestDo_nilConfig(t *testing.T) {
 		return err
 	}, nil)
 }
+
+func TestDo_withStats(t *testing.T) {
+	Do(&Configs{Name: "nc_command"}, func() error {
+		_, err := http.Get("http://www.google.com/robots")
+		return err
+	}, nil)
+
+	FillStats("nc_command", true)
+}

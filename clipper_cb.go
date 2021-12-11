@@ -13,10 +13,10 @@ const defaultTimeout = 10
 type Status int
 
 type Clipper struct {
-	Name       string
-	Failures   int64
-	open       bool
-	openedAt   int64
+	Name     string
+	Failures int64
+	open     bool
+	openedAt int64
 
 	statistics circuitStats
 
@@ -47,6 +47,20 @@ func setClipper(cfg *Configs) *Clipper {
 	return c
 }
 
+func getClipperWithName(name string) *Clipper {
+	if name == "" {
+		return nil
+	}
+
+	cb, _ok := clippers[name]
+
+	if !_ok {
+		return nil
+	}
+
+	return cb
+}
+
 func getClipper(cfg *Configs) *Clipper {
 	if cfg == nil {
 		randName := randStr()
@@ -73,6 +87,7 @@ func (c *Clipper) update(err error) {
 		if c.Failures >= maxFailures {
 			c.open = true
 			c.openedAt = time.Now().Unix()
+			c.statistics.numOfOpenings++
 			return
 		}
 	}
