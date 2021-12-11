@@ -6,7 +6,7 @@ import (
 
 type status int
 
-var (
+const (
 	finishOk          status = 0
 	finishWithErr     status = 1
 	finishWithTimeout status = 2
